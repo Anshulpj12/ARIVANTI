@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SP 21:2005 — Building Materials Intelligence</title>
+    <meta name="description" content="AI-powered query system for Indian Standards building materials specifications (SP 21:2005, BIS)">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Background Grid -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Header -->
+    <header id="app-header">
+        <div class="header-left">
+            <div class="logo-mark">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="2" y="2" width="28" height="28" rx="6" stroke="#00d4ff" stroke-width="2"/>
+                    <path d="M8 16h16M16 8v16M10 10l12 12M22 10L10 22" stroke="#00d4ff" stroke-width="1.5" opacity="0.5"/>
+                    <circle cx="16" cy="16" r="4" fill="#00d4ff" opacity="0.8"/>
+                </svg>
+            </div>
+            <div class="header-titles">
+                <h1>SP 21 : 2005</h1>
+                <p class="subtitle">Building Materials Intelligence System</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="settings-btn" class="icon-btn" title="Settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            </button>
+            <div id="status-indicator" class="status-dot offline" title="Checking connection..."></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app-main">
+        <!-- Search Section -->
+        <section id="search-section">
+            <div class="search-container">
+                <div class="search-label">Ask anything about Indian Building Standards</div>
+                <div class="search-box">
+                    <div class="search-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    </div>
+                    <input type="text" id="search-input" placeholder="e.g. What is the compressive strength of 53 grade OPC?" autocomplete="off">
+                    <select id="section-filter">
+                        <option value="">All Sections</option>
+                    </select>
+                    <button id="search-btn" title="Search (Enter)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+                <div class="search-hints">
+                    <span class="hint" data-query="What are the physical requirements for masonry cement?">masonry cement</span>
+                    <span class="hint" data-query="compressive strength of 53 grade OPC">53 grade OPC</span>
+                    <span class="hint" data-query="grading requirements for fine aggregates">aggregate grading</span>
+                    <span class="hint" data-query="chemical requirements of Portland slag cement">slag cement</span>
+                    <span class="hint" data-query="IS 8112:1989 43 grade cement specifications">IS 8112</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="hidden">
+            <!-- Loading State -->
+            <div id="loading-state" class="hidden">
+                <div class="loading-card">
+                    <div class="loading-pulse"></div>
+                    <div class="loading-text">Searching 448 standards...</div>
+                    <div class="loading-steps">
+                        <span id="step-intent" class="step">Analyzing intent</span>
+                        <span id="step-search" class="step">Searching vectors</span>
+                        <span id="step-llm" class="step">Generating answer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Answer Card -->
+            <div id="answer-card" class="hidden">
+                <div class="answer-header">
+                    <div class="answer-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        <span>AI Answer</span>
+                    </div>
+                    <div id="latency-badge" class="latency-badge"></div>
+                </div>
+                <div id="answer-content" class="answer-body"></div>
+            </div>
+
+            <!-- Sources -->
+            <div id="sources-card" class="hidden">
+                <div class="sources-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>Retrieved Sources</span>
+                    <span id="sources-count" class="count-badge"></span>
+                </div>
+                <div id="sources-list" class="sources-list"></div>
+            </div>
+
+            <!-- Intent Debug -->
+            <div id="intent-card" class="hidden">
+                <div class="intent-header">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    <span>Query Analysis</span>
+                </div>
+                <div id="intent-details" class="intent-details"></div>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section id="history-section">
+            <div class="history-header">
+                <span>Recent Queries</span>
+                <button id="clear-history" class="text-btn">Clear</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>System Configuration</h2>
+                <button id="close-settings" class="icon-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="config-group">
+                    <label>LLM Provider</label>
+                    <select id="cfg-llm-provider"></select>
+                </div>
+                <div class="config-group">
+                    <label>LLM Model</label>
+                    <input type="text" id="cfg-llm-model" placeholder="e.g. llama3">
+                </div>
+                <div class="config-group">
+                    <label>Embedding Model</label>
+                    <select id="cfg-embed-model"></select>
+                    <small class="config-note">Changing embedding model requires re-running ingestion</small>
+                </div>
+                <button id="save-config" class="primary-btn">Save Configuration</button>
+                <div id="config-status" class="config-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
