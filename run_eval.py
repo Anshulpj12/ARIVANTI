@@ -67,13 +67,13 @@ for item in test_set:
     elif intent["section_id"]:
         candidate_ids = query_engine._chunk_ids_by_section.get(intent["section_id"], set())
 
-    # Embed and search
+    # Embed and search with top_k=20 to ensure we get a deep pool for cross-reference extraction
     qvec = query_engine.embed_query(query)
-    retrieved = query_engine.search_chunks(qvec, candidate_ids, top_k=5, score_threshold=0.10)
+    retrieved = query_engine.search_chunks(qvec, candidate_ids, top_k=20, score_threshold=0.10)
 
     # Fallback to full search
     if not retrieved and candidate_ids is not None:
-        retrieved = query_engine.search_chunks(qvec, None, top_k=5, score_threshold=0.10)
+        retrieved = query_engine.search_chunks(qvec, None, top_k=20, score_threshold=0.10)
 
     t_end = time.time()
     latency = t_end - t_start
