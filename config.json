@@ -34,14 +34,22 @@
   },
   "llm": {
     "active_provider": "ollama",
-    "active_model": "llama3",
+    "active_model": "qwen2.5:0.5b",
     "available_providers": {
       "ollama": {
         "name": "Ollama",
         "base_url": "http://localhost:11434",
         "api_path": "/api/chat",
         "description": "Easiest local LLM runner. Install from ollama.com",
-        "popular_models": ["llama3", "llama3.1", "mistral", "gemma2", "phi3", "qwen2.5", "deepseek-r1"],
+        "popular_models": [
+          "llama3",
+          "llama3.1",
+          "mistral",
+          "gemma2",
+          "phi3",
+          "qwen2.5",
+          "deepseek-r1"
+        ],
         "install_cmd": "ollama pull <model_name>"
       },
       "lmstudio": {
@@ -49,7 +57,9 @@
         "base_url": "http://localhost:1234",
         "api_path": "/v1/chat/completions",
         "description": "GUI-based local LLM. OpenAI-compatible API.",
-        "popular_models": ["Load any GGUF model in LM Studio UI"],
+        "popular_models": [
+          "Load any GGUF model in LM Studio UI"
+        ],
         "install_cmd": "Download from lmstudio.ai"
       },
       "openai_compatible": {
@@ -57,7 +67,9 @@
         "base_url": "http://localhost:8080",
         "api_path": "/v1/chat/completions",
         "description": "llama.cpp server, vLLM, text-generation-webui, etc.",
-        "popular_models": ["Depends on your setup"],
+        "popular_models": [
+          "Depends on your setup"
+        ],
         "install_cmd": "Varies by server"
       }
     }
