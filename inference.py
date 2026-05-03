@@ -95,6 +95,8 @@ def main():
         # Append to results exactly matching the required schema
         results.append({
             "id": qid,
+            "query": query,
+            "expected_standards": item.get("expected_standards", []),
             "retrieved_standards": retrieved_standards,
             "latency_seconds": round(latency, 2),
         })
