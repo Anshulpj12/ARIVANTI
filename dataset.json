@@ -9015,7 +9015,9 @@
       "section_id": 1,
       "page_start": 1,
       "content": "IS 2185 (Part 2): 1983 Concrete masonry units: Hollow and solid lightweight concrete blocks ( first revision ). Outlines dimensions and physical requirements for manufacturing hollow and solid lightweight concrete masonry blocks.",
-      "section": "Cement and Concrete"
+      "section": "Cement and Concrete",
+      "is_number": "2185 (Part 2)",
+      "is_year": 1983
     },
     {
       "chunk_id": 449,
@@ -9024,7 +9026,9 @@
       "section_id": 1,
       "page_start": 1,
       "content": "IS 1489 (Part 2): 1991 Portland pozzolana cement: Calcined clay based ( third revision ). Applicable standard for plant to produce Portland pozzolana cement that is calcined clay based.",
-      "section": "Cement and Concrete"
+      "section": "Cement and Concrete",
+      "is_number": "1489 (Part 2)",
+      "is_year": 1991
     }
   ]
 }
