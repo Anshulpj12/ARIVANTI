@@ -14,7 +14,14 @@ from typing import Optional
 import query_engine
 from intent_graph import SECTION_NAMES
 
-app = FastAPI(title="SP 21:2005 RAG System", version="1.0.0")
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    query_engine.initialize()
+    yield
+
+app = FastAPI(title="SP 21:2005 RAG System", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,21 +33,14 @@ app.add_middleware(
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 CONFIG_PATH = Path(__file__).resolve().parent.parent / "config.json"
 
-
 class QueryRequest(BaseModel):
     question: str
     section_filter: Optional[int] = None
-
 
 class ConfigUpdate(BaseModel):
     embedding_model: Optional[str] = None
     llm_provider: Optional[str] = None
     llm_model: Optional[str] = None
-
-
-@app.on_event("startup")
-async def startup():
-    query_engine.initialize()
 
 
 @app.post("/query")

@@ -81,10 +81,10 @@ async def generate_answer(query: str, chunks: list) -> str:
 
     try:
         if provider_key == "ollama":
-            return await query_ollama(model, provider["base_url"], SYSTEM_PROMPT, user_msg)
+            return await query_ollama(model, provider["base_url"], SYSTEM_PROMPT, user_msg, timeout=300.0)
         else:
             return await query_openai_compatible(
-                model, provider["base_url"], provider["api_path"], SYSTEM_PROMPT, user_msg
+                model, provider["base_url"], provider["api_path"], SYSTEM_PROMPT, user_msg, timeout=300.0
             )
     except httpx.ConnectError:
         return (
@@ -94,7 +94,12 @@ async def generate_answer(query: str, chunks: list) -> str:
             f"• LM Studio: Start the local server in LM Studio settings\n"
             f"• Other: Start your OpenAI-compatible server"
         )
+    except httpx.TimeoutException:
+        return f"❌ LLM error: Request timed out. The model is taking too long to load or generate. Try again or consider a lighter model."
     except httpx.HTTPStatusError as e:
         return f"❌ LLM returned error {e.response.status_code}: {e.response.text[:500]}"
     except Exception as e:
-        return f"❌ LLM error: {str(e)}"
+        err_msg = str(e)
+        if not err_msg:
+            err_msg = repr(e)
+        return f"❌ LLM error: {err_msg}"
