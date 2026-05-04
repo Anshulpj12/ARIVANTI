@@ -63,6 +63,12 @@ def initialize():
     print(f"[Engine] Loading embedding model: {model_name}...")
     from sentence_transformers import SentenceTransformer
     _embed_model = SentenceTransformer(model_name)
+    
+    # Pre-warm the model with a dummy query so PyTorch allocates inference memory 
+    # and compiles the graph BEFORE the evaluation timer starts.
+    print("[Engine] Warming up model inference cache...")
+    _embed_model.encode(["warmup"], normalize_embeddings=True)
+    
     print("         Ready.")
 
 

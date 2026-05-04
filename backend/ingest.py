@@ -53,9 +53,8 @@ def build_chunk_texts(standards):
     for std in standards:
         # Build a rich text combining key metadata + content
         parts = [
-            f"IS Code: {std['is_code']}",
-            f"Title: {std['title']}",
-            f"Section: {std['section']}",
+            f"The exact standard for {std['title']} is {std['is_code']}.",
+            f"This belongs to the section on {std['section']}.",
         ]
         if std.get("revision"):
             parts.append(f"Revision: {std['revision']}")

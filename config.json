@@ -1,6 +1,6 @@
 {
   "embedding": {
-    "active_model": "BAAI/bge-small-en-v1.5",
+    "active_model": "all-MiniLM-L6-v2",
     "available_models": {
       "all-MiniLM-L6-v2": {
         "name": "MiniLM L6 v2",

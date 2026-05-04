@@ -1,6 +1,6 @@
 {
-  "model_name": "BAAI/bge-small-en-v1.5",
+  "model_name": "all-MiniLM-L6-v2",
   "dimensions": 384,
   "num_chunks": 450,
-  "built_at": "2026-05-04 01:02:34"
+  "built_at": "2026-05-04 15:37:20"
 }
